@@ -71,8 +71,6 @@ public class Catalysts {
 
         @Override
         public ItemStack transformInput(ItemStack input, Random random) {
-            input.damage(500, random, null);
-
             var levelMap = EnchantmentHelper.fromNbt(input.getEnchantments());
             var enchantments = new ArrayList<>(levelMap.keySet());
 
@@ -82,6 +80,10 @@ public class Catalysts {
             levelMap.remove(removedEnchantment);
             EnchantmentHelper.set(levelMap, input);
 
+            int damage = input.getDamage() + 500;
+            if (damage >= input.getMaxDamage()) return ItemStack.EMPTY;
+
+            input.setDamage(damage);
             return input;
         }
 
