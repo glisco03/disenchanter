@@ -10,6 +10,7 @@ import java.util.Map;
 public class DisenchanterConfig implements ConfigData {
 
     public Map<String, CatalystConfig> catalysts = new HashMap<>();
+    public boolean allowDisenchantingWithoutCatalyst = true;
 
     public DisenchanterConfig() {
         catalysts.put("minecraft:emerald", new CatalystConfig());

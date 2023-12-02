@@ -7,6 +7,10 @@ plugins {
 version = "${project.mod_version}+${project.minecraft_base_version}"
 group = project.maven_group
 
+base {
+    archivesName = project.archives_base_name
+}
+
 repositories {
     maven { url "https://maven.shedaniel.me/" }
     maven { url "https://maven.terraformersmc.com/" }
