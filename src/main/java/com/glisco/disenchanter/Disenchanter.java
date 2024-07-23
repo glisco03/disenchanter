@@ -23,12 +23,12 @@ import net.minecraft.util.Identifier;
 public class Disenchanter implements ModInitializer {
 
     public static final String MOD_ID = "disenchanter";
-    public static final Identifier DISENCHANTER_HANDLER_ID = new Identifier(MOD_ID, "disenchanter");
+    public static final Identifier DISENCHANTER_HANDLER_ID = Identifier.of(MOD_ID, "disenchanter");
 
     public static final Block DISENCHANTER_BLOCK = new DisenchanterBlock();
     public static final ScreenHandlerType<DisenchanterScreenHandler> DISENCHANTER_SCREEN_HANDLER;
 
-    public static final TagKey<Item> BLACKLIST = TagKey.of(RegistryKeys.ITEM, new Identifier(MOD_ID, "blacklist"));
+    public static final TagKey<Item> BLACKLIST = TagKey.of(RegistryKeys.ITEM, Identifier.of(MOD_ID, "blacklist"));
 
     private static DisenchanterConfig CONFIG;
 
@@ -38,8 +38,8 @@ public class Disenchanter implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "disenchanter"), DISENCHANTER_BLOCK);
-        Registry.register(Registries.ITEM, new Identifier(MOD_ID, "disenchanter"), new BlockItem(DISENCHANTER_BLOCK, new Item.Settings()));
+        Registry.register(Registries.BLOCK, Identifier.of(MOD_ID, "disenchanter"), DISENCHANTER_BLOCK);
+        Registry.register(Registries.ITEM, Identifier.of(MOD_ID, "disenchanter"), new BlockItem(DISENCHANTER_BLOCK, new Item.Settings()));
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.FUNCTIONAL).register(entries -> entries.addAfter(Items.ENCHANTING_TABLE, DISENCHANTER_BLOCK));
 
         AutoConfig.register(DisenchanterConfig.class, JanksonConfigSerializer::new);
@@ -47,12 +47,7 @@ public class Disenchanter implements ModInitializer {
 
         Catalysts.registerDefaults();
 
-        ServerPlayNetworking.registerGlobalReceiver(new Identifier(MOD_ID, "disenchant_request"), (server, player, handler, buf, responseSender) -> {
-            server.execute(() -> {
-                if (!(player.currentScreenHandler instanceof DisenchanterScreenHandler disenchanter)) return;
-                disenchanter.onDisenchantRequest();
-            });
-        });
+        DisenchanterNetworking.init();
     }
 
     public static DisenchanterConfig getConfig() {

@@ -1,29 +1,21 @@
 package com.glisco.disenchanter.catalyst;
 
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.EnchantmentLevelEntry;
-import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.random.Random;
 
+@FunctionalInterface
 public interface Catalyst {
 
-    Catalyst DEFAULT = new Catalyst() {
-        @Override
-        public ItemStack transformInput(ItemStack input, Random random) {
-            return ItemStack.EMPTY;
-        }
+    Catalyst DEFAULT = (input, random) -> {
+        final var resultStack = new ItemStack(Items.ENCHANTED_BOOK);
 
-        @Override
-        public ItemStack generateOutput(ItemStack input, Random random) {
-            final var resultStack = new ItemStack(Items.ENCHANTED_BOOK);
+        var targetEnchantment = input.getEnchantments().getEnchantments().iterator().next();
+        var level = input.getEnchantments().getLevel(targetEnchantment);
 
-            var targetEnchantment = EnchantmentHelper.fromNbt(input.getEnchantments()).keySet().iterator().next();
-            EnchantedBookItem.addEnchantment(resultStack, new EnchantmentLevelEntry(targetEnchantment, EnchantmentHelper.getLevel(targetEnchantment, input)));
+        resultStack.addEnchantment(targetEnchantment, level);
 
-            return resultStack;
-        }
+        return resultStack;
     };
 
     default ItemStack transformInput(ItemStack input, Random random) {
@@ -31,5 +23,4 @@ public interface Catalyst {
     }
 
     ItemStack generateOutput(ItemStack input, Random random);
-
 }

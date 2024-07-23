@@ -14,7 +14,7 @@ import net.minecraft.util.Identifier;
 
 public class DisenchanterReiPlugin implements REIClientPlugin {
 
-    public static final CategoryIdentifier<CatalystDisplay> CATALYST = CategoryIdentifier.of(new Identifier(Disenchanter.MOD_ID, "catalyst"));
+    public static final CategoryIdentifier<CatalystDisplay> CATALYST = CategoryIdentifier.of(Identifier.of(Disenchanter.MOD_ID, "catalyst"));
 
     @Override
     public void registerDisplays(DisplayRegistry registry) {

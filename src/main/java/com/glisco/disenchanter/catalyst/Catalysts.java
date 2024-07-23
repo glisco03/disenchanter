@@ -1,10 +1,15 @@
 package com.glisco.disenchanter.catalyst;
 
+import it.unimi.dsi.fastutil.Hash;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ItemEnchantmentsComponent;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentLevelEntry;
 import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.random.Random;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,13 +35,13 @@ public class Catalysts {
         @Override
         public ItemStack generateOutput(ItemStack input, Random random) {
             final var resultStack = new ItemStack(Items.ENCHANTED_BOOK);
-            final var levelMap = EnchantmentHelper.fromNbt(input.getEnchantments());
-            final var enchantments = new ArrayList<>(levelMap.keySet());
+            final var levelMap = input.getEnchantments();
+            final var enchantments = new ArrayList<>(levelMap.getEnchantments());
 
             for (int i = 0; i < 2; i++) {
                 if (enchantments.isEmpty()) break;
                 final var addition = enchantments.remove(random.nextInt(enchantments.size()));
-                EnchantedBookItem.addEnchantment(resultStack, new EnchantmentLevelEntry(addition, levelMap.get(addition)));
+                resultStack.addEnchantment(addition, levelMap.getLevel(addition));
             }
 
             return resultStack;
@@ -48,16 +53,16 @@ public class Catalysts {
         @Override
         public ItemStack generateOutput(ItemStack input, Random random) {
             final var resultStack = new ItemStack(Items.ENCHANTED_BOOK);
-            final var levelMap = EnchantmentHelper.fromNbt(input.getEnchantments());
-            final var enchantments = new ArrayList<>(levelMap.keySet());
+            final var levelMap = input.getEnchantments();
+            final var enchantments = new ArrayList<>(levelMap.getEnchantments());
 
-            final var enchantment = enchantments.remove(0);
-            EnchantedBookItem.addEnchantment(resultStack, new EnchantmentLevelEntry(enchantment, levelMap.get(enchantment)));
+            final var enchantment = enchantments.removeFirst();
+            resultStack.addEnchantment(enchantment, levelMap.getLevel(enchantment));
 
             for (int i = 0; i < 2; i++) {
                 if (enchantments.isEmpty()) break;
-                final var adddition = enchantments.remove(random.nextInt(enchantments.size()));
-                EnchantedBookItem.addEnchantment(resultStack, new EnchantmentLevelEntry(adddition, levelMap.get(adddition)));
+                final var addition = enchantments.remove(random.nextInt(enchantments.size()));
+                resultStack.addEnchantment(addition, levelMap.getLevel(addition));
             }
 
             return resultStack;
@@ -71,14 +76,13 @@ public class Catalysts {
 
         @Override
         public ItemStack transformInput(ItemStack input, Random random) {
-            var levelMap = EnchantmentHelper.fromNbt(input.getEnchantments());
-            var enchantments = new ArrayList<>(levelMap.keySet());
+            var levelMap = input.getEnchantments();
+            var enchantments = new ArrayList<>(levelMap.getEnchantments());
 
             final var removedEnchantment = enchantments.remove(random.nextInt(enchantments.size()));
-            enchantmentCache = new EnchantmentLevelEntry(removedEnchantment, levelMap.get(removedEnchantment));
+            enchantmentCache = new EnchantmentLevelEntry(removedEnchantment, levelMap.getLevel(removedEnchantment));
 
-            levelMap.remove(removedEnchantment);
-            EnchantmentHelper.set(levelMap, input);
+            EnchantmentHelper.apply(input, builder -> builder.remove(entry -> entry.matches(removedEnchantment)));
 
             int damage = input.getDamage() + 500;
             if (damage >= input.getMaxDamage()) return ItemStack.EMPTY;
@@ -92,7 +96,7 @@ public class Catalysts {
             var resultStack = new ItemStack(Items.ENCHANTED_BOOK);
 
             if (enchantmentCache == null) throw new IllegalStateException();
-            EnchantedBookItem.addEnchantment(resultStack, enchantmentCache);
+            resultStack.addEnchantment(enchantmentCache.enchantment, enchantmentCache.level);
 
             enchantmentCache = null;
             return resultStack;
@@ -105,10 +109,10 @@ public class Catalysts {
         public ItemStack generateOutput(ItemStack input, Random random) {
             var resultStack = new ItemStack(Items.ENCHANTED_BOOK);
 
-            var levelMap = EnchantmentHelper.fromNbt(input.getEnchantments());
+            var levelMap = new HashMap<RegistryEntry<Enchantment>, Integer>(Map.ofEntries(input.getEnchantments().getEnchantmentEntries().toArray(Map.Entry[]::new)));
             levelMap.forEach((enchantment, integer) -> levelMap.replace(enchantment, Math.max(1, integer - 1)));
 
-            levelMap.forEach((enchantment, integer) -> EnchantedBookItem.addEnchantment(resultStack, new EnchantmentLevelEntry(enchantment, integer)));
+            levelMap.forEach(resultStack::addEnchantment);
             return resultStack;
         }
     }
@@ -117,7 +121,7 @@ public class Catalysts {
 
         @Override
         public ItemStack transformInput(ItemStack input, Random random) {
-            EnchantmentHelper.set(new HashMap<>(), input);
+            input.set(DataComponentTypes.ENCHANTMENTS, ItemEnchantmentsComponent.DEFAULT);
             return input;
         }
 
@@ -125,10 +129,10 @@ public class Catalysts {
         public ItemStack generateOutput(ItemStack input, Random random) {
             var resultStack = new ItemStack(Items.ENCHANTED_BOOK);
 
-            var levelMap = EnchantmentHelper.fromNbt(input.getEnchantments());
-            var enchantment = levelMap.keySet().iterator().next();
+            var levelMap = input.getEnchantments();
+            var enchantment = levelMap.getEnchantments().iterator().next();
 
-            EnchantedBookItem.addEnchantment(resultStack, new EnchantmentLevelEntry(enchantment, levelMap.get(enchantment)));
+            resultStack.addEnchantment(enchantment, levelMap.getLevel(enchantment));
 
             return resultStack;
         }
@@ -138,7 +142,7 @@ public class Catalysts {
 
         @Override
         public ItemStack transformInput(ItemStack input, Random random) {
-            EnchantmentHelper.set(new HashMap<>(), input);
+            input.set(DataComponentTypes.ENCHANTMENTS, ItemEnchantmentsComponent.DEFAULT);
             return input;
         }
 
@@ -146,8 +150,10 @@ public class Catalysts {
         public ItemStack generateOutput(ItemStack input, Random random) {
             var resultStack = new ItemStack(Items.ENCHANTED_BOOK);
 
-            var levelMap = EnchantmentHelper.fromNbt(input.getEnchantments());
-            levelMap.forEach((enchantment, integer) -> EnchantedBookItem.addEnchantment(resultStack, new EnchantmentLevelEntry(enchantment, integer)));
+            var levelMap = input.getEnchantments();
+            levelMap.getEnchantmentEntries().forEach(entry -> {
+                resultStack.addEnchantment(entry.getKey(), entry.getIntValue());
+            });
 
             return resultStack;
         }
@@ -159,14 +165,14 @@ public class Catalysts {
         public ItemStack generateOutput(ItemStack input, Random random) {
             var resultStack = new ItemStack(Items.ENCHANTED_BOOK);
 
-            var levelMap = EnchantmentHelper.fromNbt(input.getEnchantments());
-            int maxLevel = levelMap.entrySet().stream().max((o1, o2) -> {
-                if (Objects.equals(o1.getValue(), o2.getValue())) return 0;
-                return o1.getValue() > o2.getValue() ? 1 : -1;
+            var levelMap = input.getEnchantments();
+            int maxLevel = levelMap.getEnchantmentEntries().stream().max((o1, o2) -> {
+                if (Objects.equals(o1.getIntValue(), o2.getIntValue())) return 0;
+                return o1.getIntValue() > o2.getIntValue() ? 1 : -1;
             }).map(Map.Entry::getValue).orElse(-1);
 
-            levelMap.entrySet().stream().filter(entry -> entry.getValue() == maxLevel)
-                    .forEach(entry -> EnchantedBookItem.addEnchantment(resultStack, new EnchantmentLevelEntry(entry.getKey(), entry.getValue())));
+            levelMap.getEnchantmentEntries().stream().filter(entry -> entry.getIntValue() == maxLevel)
+                    .forEach(entry -> resultStack.addEnchantment(entry.getKey(), entry.getIntValue()));
 
             return resultStack;
         }

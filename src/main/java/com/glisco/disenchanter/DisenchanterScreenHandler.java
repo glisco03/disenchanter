@@ -97,11 +97,7 @@ public class DisenchanterScreenHandler extends ScreenHandler {
         //noinspection OptionalGetWithoutIsPresent
         var pos = context.get((w, blockPos) -> blockPos).get();
 
-        var buf = PacketByteBufs.create();
-        buf.writeBlockPos(pos);
-
-        var players = PlayerLookup.tracking((ServerWorld) world, pos);
-        players.forEach(player -> ServerPlayNetworking.send(player, new Identifier(Disenchanter.MOD_ID, "disenchant_event"), buf));
+        DisenchanterNetworking.CHANNEL.serverHandle((ServerWorld) world, pos).send(new DisenchanterNetworking.DisenchantEvent(pos));
     }
 
     public boolean canUse(PlayerEntity player) {

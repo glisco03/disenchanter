@@ -1,11 +1,10 @@
 package com.glisco.disenchanter.client;
 
 import com.glisco.disenchanter.Disenchanter;
+import com.glisco.disenchanter.DisenchanterNetworking;
 import com.glisco.disenchanter.DisenchanterScreenHandler;
 import com.glisco.disenchanter.catalyst.Catalyst;
 import com.glisco.disenchanter.catalyst.CatalystRegistry;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -15,7 +14,7 @@ import net.minecraft.util.Identifier;
 
 public class DisenchanterScreen extends HandledScreen<DisenchanterScreenHandler> {
 
-    private static final Identifier TEXTURE = new Identifier("disenchanter", "textures/gui/container/disenchanter.png");
+    private static final Identifier TEXTURE = Identifier.of("disenchanter", "textures/gui/container/disenchanter.png");
 
     private ButtonWidget disenchantButton = null;
     private boolean validCatalyst = true;
@@ -61,7 +60,7 @@ public class DisenchanterScreen extends HandledScreen<DisenchanterScreenHandler>
         this.titleX = (this.backgroundWidth - this.textRenderer.getWidth(this.title)) / 2;
 
         this.disenchantButton = new ButtonWidget.Builder(Text.translatable("disenchanter.gui.button"), button ->
-            ClientPlayNetworking.send(new Identifier(Disenchanter.MOD_ID, "disenchant_request"), PacketByteBufs.empty())
+                DisenchanterNetworking.CHANNEL.clientHandle().send(new DisenchanterNetworking.DisenchantRequest())
         ).position(this.x + 46, this.y + 74).size(84, 20).build();
         this.disenchantButton.active = false;
         this.addDrawableChild(disenchantButton);
