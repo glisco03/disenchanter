@@ -47,7 +47,7 @@ public class DisenchanterScreen extends HandledScreen<DisenchanterScreenHandler>
 
     @Override
     protected void handledScreenTick() {
-        this.validCatalyst = !this.handler.getSlot(2).hasStack() || CatalystRegistry.get(this.handler.getSlot(2).getStack()) != Catalyst.DEFAULT;
+        this.validCatalyst = (Disenchanter.getConfig().allowDisenchantingWithoutCatalyst && !this.handler.getSlot(2).hasStack()) || CatalystRegistry.get(this.handler.getSlot(2).getStack()) != Catalyst.DEFAULT;
     }
 
     public int getBaseX() {
