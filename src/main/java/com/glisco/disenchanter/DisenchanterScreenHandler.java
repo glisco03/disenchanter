@@ -2,20 +2,16 @@ package com.glisco.disenchanter;
 
 import com.glisco.disenchanter.catalyst.Catalyst;
 import com.glisco.disenchanter.catalyst.CatalystRegistry;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.item.BookItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
 
 public class DisenchanterScreenHandler extends ScreenHandler {
 
@@ -44,7 +40,7 @@ public class DisenchanterScreenHandler extends ScreenHandler {
         this.addSlot(new Slot(inventory, 1, 143, 76) {
             @Override
             public boolean canInsert(ItemStack stack) {
-                return stack.getItem() instanceof BookItem;
+                return stack.getItem() == Items.BOOK;
             }
         });
         this.addSlot(new Slot(inventory, 2, 80, 49) {

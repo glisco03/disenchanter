@@ -1,6 +1,6 @@
 package com.glisco.disenchanter;
 
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
@@ -12,7 +12,6 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
@@ -30,8 +29,8 @@ public class DisenchanterBlock extends Block {
 
     private static final VoxelShape SHAPE = VoxelShapes.union(BASE_SHAPE, CENTER_SHAPE, ARM_1_SHAPE, ARM_2_SHAPE);
 
-    public DisenchanterBlock() {
-        super(FabricBlockSettings.create().hardness(5f).requiresTool());
+    public DisenchanterBlock(AbstractBlock.Settings settings) {
+        super(settings);
     }
 
     @Override

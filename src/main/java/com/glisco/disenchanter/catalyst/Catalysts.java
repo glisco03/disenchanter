@@ -1,12 +1,10 @@
 package com.glisco.disenchanter.catalyst;
 
-import it.unimi.dsi.fastutil.Hash;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ItemEnchantmentsComponent;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentLevelEntry;
-import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -172,7 +170,7 @@ public class Catalysts {
             }).map(Map.Entry::getValue).orElse(-1);
 
             levelMap.getEnchantmentEntries().stream().filter(entry -> entry.getIntValue() == maxLevel)
-                    .forEach(entry -> resultStack.addEnchantment(entry.getKey(), entry.getIntValue()));
+                .forEach(entry -> resultStack.addEnchantment(entry.getKey(), entry.getIntValue()));
 
             return resultStack;
         }
