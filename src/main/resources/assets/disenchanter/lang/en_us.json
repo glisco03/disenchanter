@@ -1,8 +1,9 @@
 {
-  "block.disenchanter.disenchanter" : "Disenchanter",
-  "disenchanter.gui.title" : "Disenchanter",
-  "disenchanter.gui.button" : "Disenchant",
-  "disenchanter.rei.title" : "Catalyst",
+  "block.disenchanter.disenchanter": "Disenchanter",
+  "item.disenchanter.disenchanter": "Disenchanter",
+  "disenchanter.gui.title": "Disenchanter",
+  "disenchanter.gui.button": "Disenchant",
+  "disenchanter.rei.title": "Catalyst",
 
   "disenchanter.catalyst.emerald": "Recovers two random enchantments. Destroys the item",
   "disenchanter.catalyst.diamond": "Recovers the first + two random enchantments. Destroys the item",

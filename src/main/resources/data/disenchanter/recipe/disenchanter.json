@@ -6,15 +6,9 @@
     "OOO"
   ],
   "key": {
-    "O": {
-      "item": "minecraft:crying_obsidian"
-    },
-    "E": {
-      "item": "minecraft:emerald_block"
-    },
-    "W": {
-      "item": "minecraft:black_carpet"
-    }
+    "O": "minecraft:crying_obsidian",
+    "E": "minecraft:emerald_block",
+    "W": "minecraft:black_carpet"
   },
   "result": {
     "id": "disenchanter:disenchanter",
