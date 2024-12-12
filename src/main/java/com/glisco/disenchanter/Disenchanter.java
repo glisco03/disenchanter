@@ -40,7 +40,7 @@ public class Disenchanter implements ModInitializer {
     @Override
     public void onInitialize() {
         Registry.register(Registries.BLOCK, Identifier.of(MOD_ID, "disenchanter"), DISENCHANTER_BLOCK);
-        Registry.register(Registries.ITEM, Identifier.of(MOD_ID, "disenchanter"), new BlockItem(DISENCHANTER_BLOCK, new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, Identifier.of(MOD_ID, "disenchanter")))));
+        Registry.register(Registries.ITEM, Identifier.of(MOD_ID, "disenchanter"), new BlockItem(DISENCHANTER_BLOCK, new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM, Identifier.of(MOD_ID, "disenchanter"))).useBlockPrefixedTranslationKey()));
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.FUNCTIONAL).register(entries -> entries.addAfter(Items.ENCHANTING_TABLE, DISENCHANTER_BLOCK));
 
         AutoConfig.register(DisenchanterConfig.class, JanksonConfigSerializer::new);
